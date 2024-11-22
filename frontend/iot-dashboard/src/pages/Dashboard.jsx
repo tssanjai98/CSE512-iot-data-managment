@@ -42,7 +42,7 @@ import {
 } from "@mui/material";
 
 
-import fakeData from "../../../../datagen/fake_data.json"; // Import fake data
+import fakeData from "../fakeData/fake_data.json"; // Import fake data
 import "../styles/dashboard.css";
 
 const Dashboard = () => {
