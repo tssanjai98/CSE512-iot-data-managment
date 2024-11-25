@@ -1,0 +1,45 @@
+.query-tool {
+    padding: 20px;
+}
+
+.plans-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.plan-card {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    flex: 1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.chosen-plan {
+    background-color: #f4cf61;
+    border-color: rgb(249, 226, 186);
+    box-shadow: 0 8px 16px rgba(33, 150, 243, 0.3);
+}
+
+.mermaid {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+  
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
