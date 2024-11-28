@@ -67,6 +67,10 @@ const QueryTool = () => {
     }, [selectedPlanGraph, graphId]);
 
     const executeQuery = () => {
+        if(!query.startsWith("select")){
+            window.alert("Operation Restricted!!")
+            return;
+        }
         setLoading(true);
         setTimeout(() => {
             setApiResponse(staticApiResponse);

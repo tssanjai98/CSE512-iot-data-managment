@@ -9,22 +9,12 @@ export const staticApiResponse = {
         {
             id: 1,
             description: "Plan 1: Index Scan on Devices Table",
-            graph: `classDiagram
-            Class01 <|-- AveryLongClass : Cool
-            <<Interface>> Class01
-            Class09 --> C2 : Where am I?
-            Class09 --* C3
-            Class09 --|> Class07
-            Class07 : equals()
-            Class07 : Object[] elementData
-            Class01 : size()
-            Class01 : int chimp
-            Class01 : int gorilla
-            class Class10 {
-              <<service>>
-              int id
-              size()
-            }`,
+            graph: `
+            graph TD
+            Query --> Seq-Scan-devices-INDEX-SCAN
+            Seq-Scan-devices-INDEX-SCAN --> Group-By-status-category
+            Group-By-status-category --> Sort-battery-level
+            `,
         },
         {
             id: 2,
@@ -41,12 +31,32 @@ export const staticApiResponse = {
             description: "Plan 3: Hash Join on Devices and Alerts",
             graph: `
             graph TD
-            Query --> Seq-Scan-devices-INDEX-SCAN
-            Query --> Seq-Scan-alerts-INDEX-SCAN
-            Seq-Scan-devices-INDEX-SCAN --> Hash-Join-devices-alerts
-            Seq-Scan-alerts-INDEX-SCAN --> Hash-Join-devices-alerts
-            Hash-Join-devices-alerts --> Group-By-status-category
-            Group-By-status-category --> Sort-battery-level
+Query --> Seq_Scan_countries_INDEX_SCAN
+Query --> Seq_Scan_regi_INDEX_SCAN
+Query --> Seq_Scan_s_INDEX_SCAN
+Query --> Seq_Scan_countries_regi_INDEX_SCAN
+Query --> Seq_Scan__id_EQ_regi_INDEX_SCAN
+Query --> Seq_Scan_s_id_INDEX_SCAN
+Query --> Seq_Scan_cities_INDEX_SCAN
+Query --> Seq_Scan_regi_INDEX_SCAN
+Query --> Seq_Scan_s_city_id_EQ_cities_id______WHERE_year_GT_2010_INDEX_SCAN
+Seq_Scan_countries_INDEX_SCAN --> Join_regi_INDEX_SCAN
+Seq_Scan_regi_INDEX_SCAN --> Join_s_INDEX_SCAN
+Seq_Scan_s_INDEX_SCAN --> Join_countries_regi_INDEX_SCAN
+Seq_Scan_countries_regi_INDEX_SCAN --> Join__id_EQ_regi_INDEX_SCAN
+Seq_Scan__id_EQ_regi_INDEX_SCAN --> Join_s_id_INDEX_SCAN
+Seq_Scan_s_id_INDEX_SCAN --> Join_cities_INDEX_SCAN
+Seq_Scan_cities_INDEX_SCAN --> Join_regi_INDEX_SCAN
+Seq_Scan_regi_INDEX_SCAN --> Join_s_city_id_EQ_cities_id______WHERE_year_GT_2010_INDEX_SCAN
+Join_regi_INDEX_SCAN --> Group_By_year__countryname
+Join_s_INDEX_SCAN --> Group_By_year__countryname
+Join_countries_regi_INDEX_SCAN --> Group_By_year__countryname
+Join__id_EQ_regi_INDEX_SCAN --> Group_By_year__countryname
+Join_s_id_INDEX_SCAN --> Group_By_year__countryname
+Join_cities_INDEX_SCAN --> Group_By_year__countryname
+Join_regi_INDEX_SCAN --> Group_By_year__countryname
+Join_s_city_id_EQ_cities_id______WHERE_year_GT_2010_INDEX_SCAN --> Group_By_year__countryname
+Seq_Scan_s_city_id_EQ_cities_id______WHERE_year_GT_2010_INDEX_
             `,
         },
         {
