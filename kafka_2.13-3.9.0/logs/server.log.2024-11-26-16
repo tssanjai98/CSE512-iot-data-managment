@@ -1,0 +1,2 @@
+[2024-11-26 16:26:24,548] INFO Expiring session 0x1001c472e740000, timeout of 18000ms exceeded (org.apache.zookeeper.server.ZooKeeperServer)
+[2024-11-26 16:26:32,453] INFO Invalid session 0x1001c472e740000 for client /[0:0:0:0:0:0:0:1]:63935, probably expired (org.apache.zookeeper.server.ZooKeeperServer)
