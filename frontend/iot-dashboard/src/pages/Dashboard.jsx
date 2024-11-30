@@ -4,16 +4,8 @@ import {
     Card,
     CardContent,
     Typography,
-    Select,
     MenuItem,
     CircularProgress,
-    TableContainer,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Paper,
     TextField,
     Button,
     Modal,
@@ -82,6 +74,13 @@ const Dashboard = () => {
 
         setFilteredData(updatedData);
     }, [selectedCategory, selectedCar, data]);
+
+    // Reset sensor selection when car changes
+    useEffect(() => {
+        if (!selectedCar) {
+            setSelectedSensor("");
+        }
+    }, [selectedCar]);
 
     // Filter data for alerts
     const alertData = filteredData
@@ -197,54 +196,99 @@ const Dashboard = () => {
                 <>
                     {/* Filters */}
                     <Grid container spacing={2} style={{ marginBottom: "20px" }}>
-                        <Grid item xs={4}>
-                            <TextField
-                                select
-                                label="Filter by Category"
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                                fullWidth
-                            >
-                                <MenuItem value="all">All</MenuItem>
-                                <MenuItem value="truck">Truck</MenuItem>
-                                <MenuItem value="sedan">Sedan</MenuItem>
-                                <MenuItem value="SUV">SUV</MenuItem>
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                select
-                                label="Filter by Car Name"
-                                value={selectedCar}
-                                onChange={(e) => setSelectedCar(e.target.value)}
-                                fullWidth
-                                disabled={!carOptions.length}
-                            >
-                                {carOptions.map((car) => (
-                                    <MenuItem key={car} value={car}>
-                                        {car}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <TextField
-                                select
-                                label="Filter by Sensor"
-                                value={selectedSensor}
-                                onChange={(e) => setSelectedSensor(e.target.value)}
-                                fullWidth
-                                disabled={!sensorOptions.length}
-                            >
-                                {sensorOptions.map((sensor) => (
-                                    <MenuItem key={sensor} value={sensor}>
-                                        {sensor}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
+                    {!selectedCar ? (
+                            <>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        select
+                                        label="Filter by Category"
+                                        value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        fullWidth
+                                    >
+                                        <MenuItem value="all">All</MenuItem>
+                                        <MenuItem value="truck">Truck</MenuItem>
+                                        <MenuItem value="sedan">Sedan</MenuItem>
+                                        <MenuItem value="SUV">SUV</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        select
+                                        label="Filter by Car Name"
+                                        value={selectedCar}
+                                        onChange={(e) => setSelectedCar(e.target.value)}
+                                        fullWidth
+                                        disabled={!carOptions.length}
+                                    >
+                                        <MenuItem value="">Select a car</MenuItem>
+                                        {carOptions.map((car) => (
+                                            <MenuItem key={car} value={car}>
+                                                {car}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                </Grid>
+                            </>
+                        ) : (
+                            <>
+                            <Grid item xs={4}>
+                                    <TextField
+                                        select
+                                        label="Filter by Category"
+                                        value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        fullWidth
+                                    >
+                                        <MenuItem value="all">All</MenuItem>
+                                        <MenuItem value="truck">Truck</MenuItem>
+                                        <MenuItem value="sedan">Sedan</MenuItem>
+                                        <MenuItem value="SUV">SUV</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        select
+                                        label="Filter by Car Name"
+                                        value={selectedCar}
+                                        onChange={(e) => {
+                                            setSelectedCar(e.target.value);
+                                            if (!e.target.value) {
+                                                setSelectedSensor("");
+                                            }
+                                        }}
+                                        fullWidth
+                                        disabled={!carOptions.length}
+                                    >
+                                        <MenuItem value="">Select a car</MenuItem>
+                                        {carOptions.map((car) => (
+                                            <MenuItem key={car} value={car}>
+                                                {car}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <TextField
+                                        select
+                                        label="Filter by Sensor"
+                                        value={selectedSensor}
+                                        onChange={(e) => setSelectedSensor(e.target.value)}
+                                        fullWidth
+                                    >
+                                        <MenuItem value="">Select a sensor</MenuItem>
+                                        {sensorOptions.map((sensor) => (
+                                            <MenuItem key={sensor} value={sensor}>
+                                                {sensor}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>
+                                </Grid>
+                            </>
+                        )}
 
-                        <Grid item xs={4}>
+
+                        <Grid item xs={12}>
                             <Button
                                 variant="contained"
                                 color="primary"
