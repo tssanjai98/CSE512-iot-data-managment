@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
 from pyspark.sql import SparkSession
 from fastapi.responses import JSONResponse
-
+from queryPlanning import EnhancedCassandraQueryOptimizer,CassandraQueryVisualizer
+from queryPlanning2 import StreamOptimizer
+import json
 app = FastAPI()
 
 spark = SparkSession.builder \
@@ -55,3 +57,50 @@ async def get_alerts():
 
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
+
+@app.post("/get_query_plan/")
+# async def receive_any_body(body):
+async def receive_any_data(request: Request):
+    content_type = request.headers.get("Content-Type")
+    body = json.loads(await request.body())
+    print(body)
+    optimizer = EnhancedCassandraQueryOptimizer(["localhost"])
+    query = body['query']
+    optimizer1 = StreamOptimizer()
+    optimizer1.generate_plans(query)
+    # print("Generated Query Plans:")
+    # for plan in optimizer1.plans:
+    #     print(plan.graph_code)
+
+
+    try:
+        analysis = optimizer.analyze_query(query)
+        execPlans=[
+            {
+                "id":1,
+                "graph":analysis['mermaid_diagram']
+            }
+        ]
+        for idx,plan in enumerate(optimizer1.plans):
+            execPlans.append(
+                    {
+                "id":idx+2,
+                "graph":plan.graph_code
+            }
+            )
+
+        #     print("Generated Query Plans:")
+#     for plan in optimizer.plans:
+#         print(plan)
+
+    finally:
+        optimizer.close()
+    return {
+        "searchResult": analysis['query_result'],
+        "executionPlans":execPlans,
+        "selectedPlan":1
+    }
+    # return {
+    #     "content_type": content_type,
+    #     "body": json.loads(body)
+    # }
