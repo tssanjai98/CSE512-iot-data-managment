@@ -1,6 +1,7 @@
 from fastapi import FastAPI,Request
 from pyspark.sql import SparkSession
 from fastapi.responses import JSONResponse
+from pyspark.sql.functions import col, when, count, explode
 from queryPlanning import EnhancedCassandraQueryOptimizer,CassandraQueryVisualizer
 from queryPlanning2 import StreamOptimizer
 import json
@@ -54,6 +55,27 @@ async def get_alerts():
         alerts_data = pandas_alerts_df.to_dict(orient='records')
 
         return JSONResponse(content={"status": "success", "data": alerts_data})
+
+    except Exception as e:
+        return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
+
+@app.get("/get_severity_counts")
+async def get_severity_counts():
+    try:
+        exploded_df = df.withColumn("metrics", explode(col("metrics")))
+
+        severity_counts_df = exploded_df.groupBy("metrics.sensor_id") \
+            .agg(
+                count(when(col("metrics.severity") == "Warning", 1)).alias("warning_count"),
+                count(when(col("metrics.severity") == "Critical", 1)).alias("critical_count"),
+                count(when(col("metrics.severity") == "None", 1)).alias("normal_count")
+            )
+
+        result_df = severity_counts_df.toPandas()
+
+        severity_counts = result_df.to_dict(orient="records")
+
+        return JSONResponse(content={"status": "success", "data": severity_counts})
 
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
