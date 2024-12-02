@@ -121,37 +121,6 @@ class CassandraQueryVisualizer:
         return "<br/>".join(formatted)
 
 
-# class EnhancedCassandraQueryOptimizer:
-#     def __init__(self, contact_points=['localhost'], keyspace='kafka_data'):
-#         # Previous initialization code remains the same...
-#         self.visualizer = None
-#         self.mermaid_diagrams = []
-
-#     def analyze_query(self, query: str, parameters: Dict = None) -> Dict:
-#         """Analyze query and generate visual representation"""
-#         # Execute query with tracing
-#         statement = SimpleStatement(query)
-#         statement.trace = True
-
-#         result = self.session.execute(statement, parameters or {})
-#         trace = result.get_query_trace()
-
-#         # Create visualizer and generate diagram
-#         self.visualizer = CassandraQueryVisualizer(self._process_trace(trace))
-#         mermaid_diagram = self.visualizer.generate_mermaid()
-#         self.mermaid_diagrams.append(mermaid_diagram)
-
-#         return {
-#             'trace': trace,
-#             'mermaid_diagram': mermaid_diagram,
-#             'metrics': {
-#                 'duration': trace.duration,
-#                 'coordinator': trace.coordinator,
-#                 'events_count': len(trace.events)
-#             }
-#         }
-
-
 class EnhancedCassandraQueryOptimizer:
     def __init__(self, contact_points=["localhost"], keyspace="iot_data_management", port=9042):
         """
@@ -258,62 +227,3 @@ class EnhancedCassandraQueryOptimizer:
         """
         if self.cluster:
             self.cluster.shutdown()
-
-
-# def main():
-#     # Example usage
-#     optimizer = EnhancedCassandraQueryOptimizer(['localhost'])
-
-#     # Example queries to analyze
-#     queries = [
-#         """
-#         SELECT * FROM messages
-#         WHERE topic = ? AND date = ?
-#         AND timestamp >= ?
-#         LIMIT 100
-#         """,
-#         """
-#         SELECT topic, COUNT(*)
-#         FROM messages
-#         WHERE date = ?
-#         GROUP BY topic ALLOW FILTERING
-#         """
-#     ]
-
-#     # Generate and display query plans
-#     for i, query in enumerate(queries, 1):
-#         print(f"\nAnalyzing Query {i}:")
-#         print(query)
-
-#         analysis = optimizer.analyze_query(query)
-
-#         # Display Mermaid diagram
-#         print("\nQuery Plan Visualization:")
-
-
-# def query_example():
-#     optimizer = EnhancedCassandraQueryOptimizer(["localhost"])
-
-#     # Example query with properly formatted parameters
-#     query = """
-#     SELECT * FROM messages 
-#     WHERE topic = %s AND date = %s
-#     AND timestamp >=%s
-#     LIMIT 100
-#     """
-
-#     # Format parameters properly
-#     # parameters = ["user_activity", date(2024, 1, 1), datetime(2023, 1, 1, 0, 0, 0)]
-#     parameters = ["user_activity", "2024-01-01",  "2024-01-01"]
-
-
-#     try:
-#         analysis = optimizer.analyze_query(query, parameters)
-#         print("\nQuery Plan Visualization:")
-#         print(analysis["mermaid_diagram"])
-#     finally:
-#         optimizer.close()
-
-
-# if __name__ == "__main__":
-#     query_example()

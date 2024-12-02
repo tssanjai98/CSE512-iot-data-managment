@@ -65,7 +65,7 @@ def send_to_kafka(batch):
     """Sends the enriched batch to Kafka."""
     for enriched_data in batch:
         producer.send(OUTPUT_TOPIC, value=enriched_data)
-        print(f"Message sent to {OUTPUT_TOPIC}")
+        print(f"[Stream Processor] : Message sent to {OUTPUT_TOPIC}")
 
 source = Stream.from_kafka_batched(
     INPUT_TOPIC,

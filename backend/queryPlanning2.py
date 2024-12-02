@@ -1,7 +1,6 @@
 import sqlparse
 import re
 
-
 class QueryPlan:
     def __init__(self, graph_code, cost):
         self.graph_code = graph_code
@@ -169,31 +168,3 @@ class StreamOptimizer:
         if not self.plans:
             return None
         return min(self.plans, key=lambda plan: plan.cost)
-
-
-# Example Usage
-# if __name__ == "__main__":
-#     optimizer = StreamOptimizer()
-#     query = """
-#     SELECT d.device_id, 
-#            l.location_name, 
-#            AVG(m.temperature) AS avg_temp, 
-#            MAX(m.humidity) AS max_humidity 
-#     FROM devices d 
-#     JOIN locations l ON d.location_id = l.location_id 
-#     JOIN metrics m ON d.device_id = m.device_id 
-#     WHERE m.timestamp >= '2024-01-01' 
-#     WINDOW SLIDING (15 MINUTES) 
-#     GROUP BY d.device_id, l.location_name 
-#     ORDER BY avg_temp DESC;
-#     """
-
-#     optimizer.generate_plans(query)
-
-#     print("Generated Query Plans:")
-#     for plan in optimizer.plans:
-#         print(plan)
-
-#     best_plan = optimizer.pick_best_plan()
-#     print("\nBest Plan Selected:")
-#     print(best_plan)

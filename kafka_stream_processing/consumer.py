@@ -14,10 +14,10 @@ def connect_to_cassandra():
         cluster = Cluster(CASSANDRA_HOSTS)
         session = cluster.connect()
         session.set_keyspace(KEYSPACE)
-        print("Connected to Cassandra.")
+        print("[Consumer] : Connected to Cassandra.")
         return session
     except Exception as e:
-        print(f"Error connecting to Cassandra: {e}")
+        print(f"[Consumer] : Error connecting to Cassandra: {e}")
         raise
 
 def insert_realtime_metrics(session, data):
@@ -62,11 +62,11 @@ def insert_realtime_metrics(session, data):
         )
 
         session.execute(prepared, params)
-        print(f"Successfully inserted into realtime_metrics")
+        print(f"[Consumer] : Successfully inserted into realtime_metrics")
 
     except Exception as e:
-        print(f"Failed to insert data into realtime_metrics: {data}")
-        print(f"Error: {e}")
+        print(f"[Consumer] : Failed to insert data into realtime_metrics: {data}")
+        print(f"[Consumer] : Error: {e}")
 
 def insert_alert(session, alert_data, metric_data):
     """Inserts alerts into the Cassandra alerts table with metric value as float."""
@@ -93,11 +93,11 @@ def insert_alert(session, alert_data, metric_data):
 
         # Execute the prepared statement
         session.execute(prepared, params)
-        print(f"Successfully inserted alert with metric value and unit")
+        print(f"[Consumer] : Successfully inserted alert with metric value and unit")
 
     except Exception as e:
-        print(f"Failed to insert alert with metric value and unit")
-        print(f"Error: {e}")
+        print(f"[Consumer] : Failed to insert alert with metric value and unit")
+        print(f"[Consumer] : Error: {e}")
 
 def consume_from_kafka():
     """Consumes messages from Kafka and inserts them into Cassandra."""
@@ -121,9 +121,9 @@ def consume_from_kafka():
 
             if msg.error():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
-                    print(f"End of partition: {msg.topic()} [{msg.partition()}]")
+                    print(f"[Consumer] : End of partition: {msg.topic()} [{msg.partition()}]")
                 else:
-                    print(f"Error: {msg.error()}")
+                    print(f"[Consumer] : Error: {msg.error()}")
                 continue
 
             try:
@@ -153,12 +153,12 @@ def consume_from_kafka():
                 consumer.commit()
 
             except json.JSONDecodeError as e:
-                print(f"JSON Decode Error: {e}")
+                print(f"[Consumer] : JSON Decode Error: {e}")
             except Exception as e:
-                print(f"Unexpected error while processing message: {e}")
+                print(f"[Consumer] : Unexpected error while processing message: {e}")
 
     except KeyboardInterrupt:
-        print("Shutting down consumer...")
+        print("[Consumer] : Shutting down consumer...")
     finally:
         consumer.close()
         session.cluster.shutdown()

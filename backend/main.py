@@ -81,7 +81,6 @@ async def get_severity_counts():
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
 
 @app.post("/get_query_plan/")
-# async def receive_any_body(body):
 async def receive_any_data(request: Request):
     content_type = request.headers.get("Content-Type")
     body = json.loads(await request.body())
@@ -90,11 +89,6 @@ async def receive_any_data(request: Request):
     query = body['query']
     optimizer1 = StreamOptimizer()
     optimizer1.generate_plans(query)
-    # print("Generated Query Plans:")
-    # for plan in optimizer1.plans:
-    #     print(plan.graph_code)
-
-
     try:
         analysis = optimizer.analyze_query(query)
         execPlans=[
@@ -111,10 +105,6 @@ async def receive_any_data(request: Request):
             }
             )
 
-        #     print("Generated Query Plans:")
-#     for plan in optimizer.plans:
-#         print(plan)
-
     finally:
         optimizer.close()
     return {
@@ -122,7 +112,3 @@ async def receive_any_data(request: Request):
         "executionPlans":execPlans,
         "selectedPlan":1
     }
-    # return {
-    #     "content_type": content_type,
-    #     "body": json.loads(body)
-    # }

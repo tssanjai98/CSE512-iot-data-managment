@@ -12,9 +12,9 @@ bootstrap_servers = "localhost:9092"
 def delivery_report(err, msg):
     """Reports the delivery status of messages."""
     if err is not None:
-        print(f"Message delivery failed: {err}")
+        print(f"[Producer] : Message delivery failed: {err}")
     else:
-        print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+        print(f"[Producer] : Message delivered to {msg.topic()} [{msg.partition()}]")
 
 def generate_car_data():
     """Generates mock IoT data for multiple cars"""
