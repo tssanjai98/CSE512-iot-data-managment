@@ -1,4 +1,0 @@
-data = {'car_id': '31f7274e-1859-4247-823f-742705209c08', 'car_name': 'Toyota Camry', 'sensor_id': 'battery_level_sensor', 'sensor_name': 'Battery Level Sensor', 'timestamp': '2024-11-25T11:40:19.598872+00:00', 'metrics': {'value': 85.72, 'units': '%'}, 'location': {'latitude': 40.712776, 'longitude': -74.005974}, 'status': 'active', 'owner': 'Samuel Jackson', 'alert': False, 'alert_cause': None, 'severity': None}
-
-
-data2 = {'car_id': '31f7274e-1859-4247-823f-742705209c08', 'car_name': 'Toyota Camry', 'sensor_id': 'battery_level_sensor', 'sensor_name': 'Battery Level Sensor', 'timestamp': '2024-11-27T12:08:29.850511+00:00', 'metrics': {'value': 82.82, 'units': '%'}, 'location': {'latitude': 5.268409, 'longitude': -31.994032}, 'status': 'active', 'owner': 'Samuel Jackson', 'alert': False, 'alert_cause': None, 'severity': None}
