@@ -20,11 +20,11 @@ Backend Setup
    > `bin/kafka-server-start.sh config/server.properties` (Make sure to start this script only after the first script starts)
 
 5. Make sure Cassandra is already running on docker. This can be done by `docker pull cassandra` and starting the container.
-6. Then go back to the project root folder in a new terminal window (As the other two scripts will be running). Then navigate into `CSE512-iot-data-managment/kafka_stream_processing/` folder and run the `start_kafka.py script`:
+6. Then go back to the project root folder in a **NEW TERMINAL WINDOW** (As the other two scripts will be running). Then navigate into `CSE512-iot-data-managment/kafka_stream_processing/` folder and run the `start_kafka.py script`:
 
    > `python start_kafka.py` (This will start streaming the data through kafka and push it to Cassandra)
 
-7. Now go to a **NEW TERMINAL** and navigate to `CSE512-iot-data-managment/backend/` folder and start the `main.py` script using the following command:
+7. Now go to a **NEW TERMINAL WINDOW** and navigate to `CSE512-iot-data-managment/backend/` folder and start the `main.py` script using the following command:
 
 > `uvicorn main:app --reload`
 
