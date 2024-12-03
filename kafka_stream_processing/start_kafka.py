@@ -106,9 +106,9 @@ def check_and_create_tables(session):
 
 def setup_cassandra():
     session = connect_to_cassandra()
-    check_and_create_keyspace(session)  # Create the keyspace first
-    session.set_keyspace(KEYSPACE)  # Now set the keyspace
-    check_and_create_tables(session)  # Create the tables if they don't exist
+    check_and_create_keyspace(session)  
+    session.set_keyspace(KEYSPACE) 
+    check_and_create_tables(session)
     session.shutdown()
 
 def run_producer():

@@ -1,11 +1,22 @@
 from fastapi import FastAPI,Request
 from pyspark.sql import SparkSession
 from fastapi.responses import JSONResponse
-from pyspark.sql.functions import col, when, count, explode
 from queryPlanning import EnhancedCassandraQueryOptimizer,CassandraQueryVisualizer
 from queryPlanning2 import StreamOptimizer
+from fastapi.middleware.cors import CORSMiddleware
+from pyspark.sql.functions import col, when, count, explode
+
 import json
 app = FastAPI()
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Allow specific origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 spark = SparkSession.builder \
     .appName("IoTMetrics") \
@@ -22,10 +33,28 @@ alerts_df = spark.read.format("org.apache.spark.sql.cassandra") \
     .options(table="alerts", keyspace="iot_data_management") \
     .load()
 
+
+@app.get("/get_severity_counts")
+async def get_severity_counts():
+    try:
+        exploded_df = df.withColumn("metrics", explode(col("metrics")))
+        severity_counts_df = exploded_df.groupBy("metrics.sensor_id") \
+            .agg(
+                count(when(col("metrics.severity") == "Warning", 1)).alias("warning_count"),
+                count(when(col("metrics.severity") == "Critical", 1)).alias("critical_count"),
+                count(when(col("metrics.severity") == "None", 1)).alias("normal_count")
+            )
+        result_df = severity_counts_df.toPandas()
+        severity_counts = result_df.to_dict(orient="records")
+        return JSONResponse(content={"status": "success", "data": severity_counts})
+    except Exception as e:
+        return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
+
+
 @app.get("/get_metrics")
 async def get_metrics():
     try:
-        limited_df = df.limit(500)
+        limited_df = df
         
         pandas_df = limited_df.toPandas()
 
@@ -59,28 +88,8 @@ async def get_alerts():
     except Exception as e:
         return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
 
-@app.get("/get_severity_counts")
-async def get_severity_counts():
-    try:
-        exploded_df = df.withColumn("metrics", explode(col("metrics")))
-
-        severity_counts_df = exploded_df.groupBy("metrics.sensor_id") \
-            .agg(
-                count(when(col("metrics.severity") == "Warning", 1)).alias("warning_count"),
-                count(when(col("metrics.severity") == "Critical", 1)).alias("critical_count"),
-                count(when(col("metrics.severity") == "None", 1)).alias("normal_count")
-            )
-
-        result_df = severity_counts_df.toPandas()
-
-        severity_counts = result_df.to_dict(orient="records")
-
-        return JSONResponse(content={"status": "success", "data": severity_counts})
-
-    except Exception as e:
-        return JSONResponse(content={"status": "error", "message": str(e)}, status_code=500)
-
 @app.post("/get_query_plan/")
+# async def receive_any_body(body):
 async def receive_any_data(request: Request):
     content_type = request.headers.get("Content-Type")
     body = json.loads(await request.body())
@@ -89,21 +98,32 @@ async def receive_any_data(request: Request):
     query = body['query']
     optimizer1 = StreamOptimizer()
     optimizer1.generate_plans(query)
+    # print("Generated Query Plans:")
+    # for plan in optimizer1.plans:
+    #     print(plan.graph_code)
+
+
     try:
         analysis = optimizer.analyze_query(query)
         execPlans=[
             {
                 "id":1,
-                "graph":analysis['mermaid_diagram']
+                "graph":analysis['mermaid_diagram'],
+                "description": "Execution Plan (Optimized)"
             }
         ]
         for idx,plan in enumerate(optimizer1.plans):
             execPlans.append(
                     {
                 "id":idx+2,
-                "graph":plan.graph_code
+                "graph":plan.graph_code,
+                "description": "Theorical Plan " + str(idx+2)
             }
             )
+
+        #     print("Generated Query Plans:")
+#     for plan in optimizer.plans:
+#         print(plan)
 
     finally:
         optimizer.close()
@@ -112,3 +132,7 @@ async def receive_any_data(request: Request):
         "executionPlans":execPlans,
         "selectedPlan":1
     }
+    # return {
+    #     "content_type": content_type,
+    #     "body": json.loads(body)
+    # }
