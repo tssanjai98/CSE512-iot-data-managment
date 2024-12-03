@@ -49,4 +49,7 @@ It is a dashboard for providing data insights about IoT-enabled cars, with the f
 
 ![Screenshot 2024-11-30 at 1 01 10 PM](https://github.com/user-attachments/assets/19dd5238-a0ab-47a7-be5d-868984026087)
 
+**Query Tool**
+
+<img width="1512" alt="Screenshot 2024-12-02 at 7 31 10 PM" src="https://github.com/user-attachments/assets/4a40c677-8a76-4439-9862-0300ca38ffd3">
 
